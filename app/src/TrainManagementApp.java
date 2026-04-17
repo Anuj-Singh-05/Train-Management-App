@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 public class TrainManagementApp {
 
+    // Inner Bogie class to model passenger bogies
     static class Bogie {
         String name;
         int capacity;
