@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TrainManagementApp {
 
-    // Inner Bogie class to model passenger bogies
     static class Bogie {
         String name;
         int capacity;
@@ -16,40 +16,37 @@ public class TrainManagementApp {
 
         @Override
         public String toString() {
-            return name + " (Capacity: " + capacity + ")";
+            return name + " (Cap: " + capacity + ")";
         }
     }
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC8 - Filter Passenger Bogies Using Streams ");
+        System.out.println(" UC9 - Group Bogies by Type (groupingBy) ");
         System.out.println("===============================================\n");
 
-        // Initialize bogie list
+        // Initialize bogie list with some duplicates for grouping
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("Sleeper", 72)); // Second Sleeper bogie
         bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
+        bogies.add(new Bogie("AC Chair", 56)); // Second AC Chair bogie
 
-        System.out.println("All Bogies in Consist:");
+        System.out.println("Current Train Consist (Flat List):");
         bogies.forEach(System.out::println);
 
-        // ---- Stream Pipeline: Filter bogies with capacity > 60 ----
-        List<Bogie> highCapacityBogies = bogies.stream()
-                .filter(b -> b.capacity > 60) // Predicate logic
-                .collect(Collectors.toList()); // Terminal operation
+        // ---- Stream Pipeline: Grouping bogies by their name/type ----
+        // Key: Bogie Name (String), Value: List of Bogie objects
+        Map<String, List<Bogie>> groupedBogies = bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-        System.out.println("\nHigh Capacity Bogies (Capacity > 60):");
-        if (highCapacityBogies.isEmpty()) {
-            System.out.println("No bogies match the criteria.");
-        } else {
-            highCapacityBogies.forEach(System.out::println);
-        }
+        System.out.println("\nBogies Grouped by Type:");
+        groupedBogies.forEach((type, list) -> {
+            System.out.println(type + " -> " + list);
+        });
 
-        // Verify original list integrity
-        System.out.println("\nTotal bogies in original list: " + bogies.size());
-        System.out.println("UC8 filtering completed successfully...");
+        System.out.println("\nUC9 grouping operation completed successfully...");
     }
 }
