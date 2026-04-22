@@ -1,56 +1,66 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TrainManagementApp {
 
-    static class GoodsBogie {
-        String type;
-        String cargo;
+    static class Bogie {
+        String name;
+        int capacity;
 
-        GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
-        }
-
-        @Override
-        public String toString() {
-            return type + " [" + cargo + "]";
+        Bogie(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
         }
     }
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC12 - Safety Compliance Check (allMatch) ");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
         System.out.println("===============================================\n");
 
-        // Initialize list of goods bogies
-        List<GoodsBogie> goodsConsist = new ArrayList<>();
-        goodsConsist.add(new GoodsBogie("Open", "Coal"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsConsist.add(new GoodsBogie("Box", "Grain"));
-        goodsConsist.add(new GoodsBogie("Cylindrical", "Petroleum"));
-
-        System.out.println("Inspecting Goods Consist:");
-        goodsConsist.forEach(System.out::println);
-
-        // ---- Safety Rule: Cylindrical bogies must only carry Petroleum ----
-        // allMatch returns true only if EVERY bogie passes the test
-        boolean isSafe = goodsConsist.stream().allMatch(b -> {
-            if (b.type.equalsIgnoreCase("Cylindrical")) {
-                return b.cargo.equalsIgnoreCase("Petroleum");
-            }
-            return true; // Non-cylindrical bogies are safe by default here
-        });
-
-        System.out.println("\n-----------------------------------------------");
-        if (isSafe) {
-            System.out.println(" STATUS: COMPLIANT - Train is safe for departure.");
-        } else {
-            System.out.println(" STATUS: DANGER - Safety violation detected!");
+        // Initialize a larger dataset to see measurable differences
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            bogies.add(new Bogie("Sleeper", 72));
+            bogies.add(new Bogie("AC Chair", 56));
         }
-        System.out.println("-----------------------------------------------");
 
-        System.out.println("\nUC12 safety validation completed successfully...");
+        // ---- 1. LOOP-BASED FILTERING ----
+        long startLoop = System.nanoTime();
+        List<Bogie> loopFiltered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 60) {
+                loopFiltered.add(b);
+            }
+        }
+        long endLoop = System.nanoTime();
+        long loopTime = endLoop - startLoop;
+
+        // ---- 2. STREAM-BASED FILTERING ----
+        long startStream = System.nanoTime();
+        List<Bogie> streamFiltered = bogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+        long endStream = System.nanoTime();
+        long streamTime = endStream - startStream;
+
+        // Display results
+        System.out.println("Benchmark Results (for " + bogies.size() + " bogies):");
+        System.out.println("Loop-based Time   : " + loopTime + " ns");
+        System.out.println("Stream-based Time : " + streamTime + " ns");
+        
+        System.out.println("\nVerification:");
+        System.out.println("Loop results size   : " + loopFiltered.size());
+        System.out.println("Stream results size : " + streamFiltered.size());
+
+        if (loopTime < streamTime) {
+            System.out.println("\nOutcome: Loop-based processing was FASTER in this instance.");
+        } else {
+            System.out.println("\nOutcome: Stream-based processing was FASTER in this instance.");
+        }
+
+        System.out.println("\nUC13 performance comparison completed successfully...");
     }
 }
