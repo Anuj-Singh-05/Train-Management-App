@@ -5,30 +5,22 @@ public class TrainManagementApp {
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC16 - Sort Bogies by Capacity (Bubble Sort) ");
+        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort() ");
         System.out.println("===============================================\n");
 
-        // Array of passenger bogie capacities
-        int[] capacities = {72, 56, 24, 70, 60};
+        // Array of bogie type names in unsorted order
+        String[] bogieTypes = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
-        System.out.println("Before Sorting: " + Arrays.toString(capacities));
+        System.out.println("Bogie Names Before Sorting:");
+        System.out.println(Arrays.toString(bogieTypes));
 
-        // ---- Bubble Sort Algorithm ----
-        int n = capacities.length;
-        for (int i = 0; i < n - 1; i++) {
-            // Last i elements are already in place, so we ignore them
-            for (int j = 0; j < n - i - 1; j++) {
-                // Compare adjacent elements
-                if (capacities[j] > capacities[j + 1]) {
-                    // Swap logic using a temporary variable
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
+        // ---- Using Java's Built-in Utility ----
+        // This replaces the nested loops and swap logic from UC16
+        Arrays.sort(bogieTypes);
 
-        System.out.println("After Bubble Sort: " + Arrays.toString(capacities));
-        System.out.println("\nUC16 manual sorting completed successfully...");
+        System.out.println("\nBogie Names After Alphabetical Sorting:");
+        System.out.println(Arrays.toString(bogieTypes));
+
+        System.out.println("\nUC17 library-based sorting completed successfully...");
     }
 }
