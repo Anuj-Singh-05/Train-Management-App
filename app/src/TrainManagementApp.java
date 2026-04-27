@@ -1,26 +1,37 @@
-import java.util.Arrays;
-
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort() ");
+        System.out.println(" UC18 - Linear Search for Bogie ID ");
         System.out.println("===============================================\n");
 
-        // Array of bogie type names in unsorted order
-        String[] bogieTypes = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        // Array of unsorted Bogie IDs
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchKey = "BG309";
 
-        System.out.println("Bogie Names Before Sorting:");
-        System.out.println(Arrays.toString(bogieTypes));
+        System.out.println("Consist IDs: " + String.join(", ", bogieIds));
+        System.out.println("Searching for: " + searchKey);
 
-        // ---- Using Java's Built-in Utility ----
-        // This replaces the nested loops and swap logic from UC16
-        Arrays.sort(bogieTypes);
+        // ---- Linear Search Logic ----
+        boolean found = false;
+        int position = -1;
 
-        System.out.println("\nBogie Names After Alphabetical Sorting:");
-        System.out.println(Arrays.toString(bogieTypes));
+        for (int i = 0; i < bogieIds.length; i++) {
+            // Sequential comparison
+            if (bogieIds[i].equals(searchKey)) {
+                found = true;
+                position = i;
+                break; // Early Termination: stop once found
+            }
+        }
 
-        System.out.println("\nUC17 library-based sorting completed successfully...");
+        if (found) {
+            System.out.println("\n[SUCCESS] Bogie " + searchKey + " found at position: " + (position + 1));
+        } else {
+            System.out.println("\n[NOT FOUND] Bogie " + searchKey + " is not in the consist.");
+        }
+
+        System.out.println("\nUC18 search operation completed successfully...");
     }
 }
