@@ -1,6 +1,9 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+// Custom Exception Class
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
 public class TrainManagementApp {
 
@@ -8,59 +11,54 @@ public class TrainManagementApp {
         String name;
         int capacity;
 
-        Bogie(String name, int capacity) {
+        // Constructor now enforces business rules
+        Bogie(String name, int capacity) throws InvalidCapacityException {
+            if (capacity <= 0) {
+                throw new InvalidCapacityException("Capacity must be greater than zero (Provided: " + capacity + ")");
+            }
             this.name = name;
             this.capacity = capacity;
+        }
+
+        @Override
+        public String toString() {
+            return name + " (Capacity: " + capacity + ")";
         }
     }
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
+        System.out.println(" UC14 - Handle Invalid Bogie Capacity ");
         System.out.println("===============================================\n");
 
-        // Initialize a larger dataset to see measurable differences
-        List<Bogie> bogies = new ArrayList<>();
-        for (int i = 0; i < 1000; i++) {
-            bogies.add(new Bogie("Sleeper", 72));
-            bogies.add(new Bogie("AC Chair", 56));
+        // Scenario 1: Creating a Valid Bogie
+        try {
+            System.out.println("Attempting to create a valid bogie...");
+            Bogie validBogie = new Bogie("Sleeper", 72);
+            System.out.println("[SUCCESS] Created: " + validBogie);
+        } catch (InvalidCapacityException e) {
+            System.out.println("[ERROR] " + e.getMessage());
         }
 
-        // ---- 1. LOOP-BASED FILTERING ----
-        long startLoop = System.nanoTime();
-        List<Bogie> loopFiltered = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.capacity > 60) {
-                loopFiltered.add(b);
-            }
-        }
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
-
-        // ---- 2. STREAM-BASED FILTERING ----
-        long startStream = System.nanoTime();
-        List<Bogie> streamFiltered = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        // Display results
-        System.out.println("Benchmark Results (for " + bogies.size() + " bogies):");
-        System.out.println("Loop-based Time   : " + loopTime + " ns");
-        System.out.println("Stream-based Time : " + streamTime + " ns");
-        
-        System.out.println("\nVerification:");
-        System.out.println("Loop results size   : " + loopFiltered.size());
-        System.out.println("Stream results size : " + streamFiltered.size());
-
-        if (loopTime < streamTime) {
-            System.out.println("\nOutcome: Loop-based processing was FASTER in this instance.");
-        } else {
-            System.out.println("\nOutcome: Stream-based processing was FASTER in this instance.");
+        // Scenario 2: Attempting to create an Invalid Bogie (Zero Capacity)
+        System.out.println("\nAttempting to create an invalid bogie (Zero)...");
+        try {
+            Bogie invalidBogie1 = new Bogie("AC Chair", 0);
+            System.out.println("[SUCCESS] Created: " + invalidBogie1);
+        } catch (InvalidCapacityException e) {
+            System.out.println("[CAUGHT EXCEPTION] " + e.getMessage());
         }
 
-        System.out.println("\nUC13 performance comparison completed successfully...");
+        // Scenario 3: Attempting to create an Invalid Bogie (Negative Capacity)
+        System.out.println("\nAttempting to create an invalid bogie (Negative)...");
+        try {
+            Bogie invalidBogie2 = new Bogie("First Class", -10);
+            System.out.println("[SUCCESS] Created: " + invalidBogie2);
+        } catch (InvalidCapacityException e) {
+            System.out.println("[CAUGHT EXCEPTION] " + e.getMessage());
+        }
+
+        System.out.println("\nUC14 exception handling completed successfully...");
     }
 }
