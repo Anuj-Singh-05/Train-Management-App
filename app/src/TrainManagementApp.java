@@ -1,37 +1,47 @@
+import java.util.Arrays;
+
 public class TrainManagementApp {
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC18 - Linear Search for Bogie ID ");
+        System.out.println(" UC19 - Binary Search for Bogie ID ");
         System.out.println("===============================================\n");
 
-        // Array of unsorted Bogie IDs
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchKey = "BG309";
+        // Initial unsorted array
+        String[] bogieIds = {"BG309", "BG101", "BG550", "BG205", "BG412"};
+        String searchKey = "BG205";
 
-        System.out.println("Consist IDs: " + String.join(", ", bogieIds));
+        // Precondition: Binary Search REQUIRES sorted data
+        Arrays.sort(bogieIds);
+        System.out.println("Sorted Consist IDs: " + Arrays.toString(bogieIds));
         System.out.println("Searching for: " + searchKey);
 
-        // ---- Linear Search Logic ----
-        boolean found = false;
-        int position = -1;
+        // ---- Binary Search Logic ----
+        int low = 0;
+        int high = bogieIds.length - 1;
+        int foundIndex = -1;
 
-        for (int i = 0; i < bogieIds.length; i++) {
-            // Sequential comparison
-            if (bogieIds[i].equals(searchKey)) {
-                found = true;
-                position = i;
-                break; // Early Termination: stop once found
+        while (low <= high) {
+            int mid = low + (high - low) / 2; // Calculate middle index
+            int comparison = searchKey.compareTo(bogieIds[mid]);
+
+            if (comparison == 0) {
+                foundIndex = mid; // Match found
+                break;
+            } else if (comparison > 0) {
+                low = mid + 1; // Key is in the right half
+            } else {
+                high = mid - 1; // Key is in the left half
             }
         }
 
-        if (found) {
-            System.out.println("\n[SUCCESS] Bogie " + searchKey + " found at position: " + (position + 1));
+        if (foundIndex != -1) {
+            System.out.println("\n[SUCCESS] Bogie " + searchKey + " found at sorted index: " + foundIndex);
         } else {
-            System.out.println("\n[NOT FOUND] Bogie " + searchKey + " is not in the consist.");
+            System.out.println("\n[NOT FOUND] Bogie " + searchKey + " does not exist.");
         }
 
-        System.out.println("\nUC18 search operation completed successfully...");
+        System.out.println("\nUC19 binary search operation completed.");
     }
 }
