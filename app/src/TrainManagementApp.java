@@ -1,47 +1,51 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainManagementApp {
+
+    /**
+     * Searches for a bogie ID in the list.
+     * Throws IllegalStateException if the train consist is empty.
+     */
+    public static boolean findBogie(List<String> bogies, String searchKey) {
+        // ---- State Validation (Fail-Fast) ----
+        if (bogies == null || bogies.isEmpty()) {
+            throw new IllegalStateException("Search Failed: No bogies available in the train consist.");
+        }
+
+        // Logic only proceeds if the state is valid
+        return bogies.contains(searchKey);
+    }
 
     public static void main(String[] args) {
         // Display banner
         System.out.println("===============================================");
-        System.out.println(" UC19 - Binary Search for Bogie ID ");
+        System.out.println(" UC20 - Exception Handling During Search ");
         System.out.println("===============================================\n");
 
-        // Initial unsorted array
-        String[] bogieIds = {"BG309", "BG101", "BG550", "BG205", "BG412"};
-        String searchKey = "BG205";
+        List<String> emptyConsist = new ArrayList<>();
+        List<String> activeConsist = List.of("BG101", "BG205", "BG309");
 
-        // Precondition: Binary Search REQUIRES sorted data
-        Arrays.sort(bogieIds);
-        System.out.println("Sorted Consist IDs: " + Arrays.toString(bogieIds));
-        System.out.println("Searching for: " + searchKey);
-
-        // ---- Binary Search Logic ----
-        int low = 0;
-        int high = bogieIds.length - 1;
-        int foundIndex = -1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2; // Calculate middle index
-            int comparison = searchKey.compareTo(bogieIds[mid]);
-
-            if (comparison == 0) {
-                foundIndex = mid; // Match found
-                break;
-            } else if (comparison > 0) {
-                low = mid + 1; // Key is in the right half
-            } else {
-                high = mid - 1; // Key is in the left half
-            }
+        // Scenario 1: Search on empty data
+        try {
+            System.out.println("Attempting to search empty consist...");
+            findBogie(emptyConsist, "BG101");
+        } catch (IllegalStateException e) {
+            System.out.println("[CAUGHT] " + e.getMessage());
         }
 
-        if (foundIndex != -1) {
-            System.out.println("\n[SUCCESS] Bogie " + searchKey + " found at sorted index: " + foundIndex);
-        } else {
-            System.out.println("\n[NOT FOUND] Bogie " + searchKey + " does not exist.");
+        System.out.println("\n-----------------------------------------------\n");
+
+        // Scenario 2: Search on valid data
+        try {
+            String target = "BG205";
+            System.out.println("Attempting to search for: " + target);
+            boolean isFound = findBogie(activeConsist, target);
+            System.out.println("[RESULT] Bogie found: " + isFound);
+        } catch (IllegalStateException e) {
+            System.out.println("[ERROR] " + e.getMessage());
         }
 
-        System.out.println("\nUC19 binary search operation completed.");
+        System.out.println("\nUC20 state validation completed successfully.");
     }
 }
